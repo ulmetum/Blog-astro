@@ -5,22 +5,22 @@ import { getCollection } from 'astro:content'
 import BlogPost from '@components/BlogPost.astro'
 import type { CollectionEntry } from 'astro:content'
 
-interface DataProps {
-  data: CollectionEntry<'blog'>[]
-  start: number
-  end: number
-  size: number
-  total: number
-  currentPage: number
-  lastPage: number
-  url: {
-    current: string
-    next: undefined | string
-    prev: undefined | string
-    first: undefined | string
-    last: undefined | string
-  }
-}
+// interface DataProps {
+//   data: CollectionEntry<'blog'>[]
+//   start: number
+//   end: number
+//   size: number
+//   total: number
+//   currentPage: number
+//   lastPage: number
+//   url: {
+//     current: string
+//     next: undefined | string
+//     prev: undefined | string
+//     first: undefined | string
+//     last: undefined | string
+//   }
+// }
 
 export const getStaticPaths = (async ({ paginate }) => {
   const blogPosts = await getCollection('blog')
@@ -28,11 +28,12 @@ export const getStaticPaths = (async ({ paginate }) => {
   return paginate(blogPosts, { pageSize: 2 })
 }) satisfies GetStaticPaths
 
-const { page } = Astro.props as {
-  page: DataProps
-}
+const { page } = Astro.props
+// const { page } = Astro.props as {
+//   page: DataProps
+// }
 
-console.log({ page })
+// console.log({ page })
 ---
 
 <MainLayout>

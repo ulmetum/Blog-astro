@@ -7,9 +7,9 @@ import { getEntry } from 'astro:content'
 import { Formatter } from '@utils/formatter'
 import type { CollectionEntry } from 'astro:content'
 
-interface Props {
-  post: CollectionEntry<'blog'>
-}
+// interface Props {
+//   post: CollectionEntry<'blog'>
+// }
 
 export const getStaticPaths = (async () => {
   const blogPosts = await getCollection('blog')
@@ -20,7 +20,7 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths
 
 const { post } = Astro.props
-const { slug } = Astro.params
+// const { slug } = Astro.params
 
 const { data } = post
 

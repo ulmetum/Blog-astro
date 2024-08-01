@@ -7,10 +7,11 @@ import BlogPost from '@components/BlogPost.astro'
 import { getCollection } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
 
-interface Props {
-  blogPosts: CollectionEntry<'blog'>[]
-  author: CollectionEntry<'author'>
-}
+// interface Props {
+//   blogPosts: CollectionEntry<'blog'>[]
+//   author: CollectionEntry<'author'>
+// }
+
 export const getStaticPaths = (async () => {
   const [author, blogPosts] = await Promise.all([getCollection('author'), getCollection('blog')])
   return author.map((author) => ({
