@@ -1,0 +1,75 @@
+---
+import type { GetStaticPaths } from 'astro'
+import MainLayout from '@layouts/MainLayout.astro'
+import { getCollection } from 'astro:content'
+import BlogPost from '@components/BlogPost.astro'
+import type { CollectionEntry } from 'astro:content'
+
+interface DataProps {
+  data: CollectionEntry<'blog'>[]
+  start: number
+  end: number
+  size: number
+  total: number
+  currentPage: number
+  lastPage: number
+  url: {
+    current: string
+    next: undefined | string
+    prev: undefined | string
+    first: undefined | string
+    last: undefined | string
+  }
+}
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const blogPosts = await getCollection('blog')
+
+  return paginate(blogPosts, { pageSize: 2 })
+}) satisfies GetStaticPaths
+
+const { page } = Astro.props as {
+  page: DataProps
+}
+
+console.log({ page })
+---
+
+<MainLayout>
+  <a class="btn-back" href="/">Volver</a>
+  <div class="mx-auto py-10">
+    <h1 class="text-3xl font-semibold capitalize text-white lg:text-4xl">
+      Fernando's Blog paginado
+    </h1>
+  </div>
+
+  <section class="bg-gray-900" aria-label="Entradas de blog">
+    <div class="mt-8 grid grid-cols-1 gap-8 md:mt-16 md:grid-cols-2">
+      {page.data.map((post) => <BlogPost post={post} />)}
+    </div>
+  </section>
+
+  <section aria-label="Controles" class="mt-10 flex justify-between">
+    <!--   page .. ?? prev   -->
+    <a
+      href={page.url.prev}
+      class:list={{
+        disabled: !page.url.prev
+      }}>Anteriores</a
+    >
+
+    <!--   page .. ?? next   -->
+    <a
+      href={page.url.next}
+      class:list={{
+        disabled: !page.url.next
+      }}>Siguientes</a
+    >
+  </section>
+</MainLayout>
+
+<style>
+  .disabled {
+    @apply bg-gray-600 hover:bg-gray-600;
+  }
+</style>

@@ -1,0 +1,21 @@
+---
+import MainLayout from '@layouts/MainLayout.astro'
+import { Image, Picture } from 'astro:assets'
+
+import post05Image from '@images/post-05.png'
+---
+
+<MainLayout title="Images">
+  <h1 class="text-4xl font-bold">Images</h1>
+
+  <!-- <Image src={post05Image} alt="A description of my image." /> -->
+
+  <Picture
+    src={post05Image}
+    widths={[240, 540, 720, post05Image.width]}
+    sizes={`(max-width: 360px) 240px, (max-width: 720px) 540px, (max-width: 1600px) 720px, ${post05Image.width}px`}
+    alt="A description of my image."
+  />
+</MainLayout>
+
+<style></style>

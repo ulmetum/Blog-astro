@@ -1,0 +1,31 @@
+---
+import MainLayout from '@layouts/MainLayout.astro'
+import { siteConfig } from '@config/site-config'
+import { getCollection } from 'astro:content'
+import BlogPost from '@components/BlogPost.astro'
+
+const {} = Astro.props
+
+const blogPosts = await getCollection('blog', (post) => post.data.isDraft === false)
+
+// console.log({ blogPosts })
+---
+
+<MainLayout>
+  <!-- component -->
+  <section class="dark:bg-gray-900">
+    <div class="container mx-auto px-6 py-10">
+      <h1 class="text-3xl font-semibold capitalize text-white lg:text-4xl">
+        {siteConfig.title}
+      </h1>
+      <div class="flex flex-col gap-2">
+        <a class="text-blue-500 hover:underline" href="/blog/1">Blog Paginado</a>
+        <a href="/authors">Lista de autores</a>
+      </div>
+
+      <div class="mt-8 grid grid-cols-1 gap-8 md:mt-16 md:grid-cols-2">
+        {blogPosts.map((post) => <BlogPost post={post} />)}
+      </div>
+    </div>
+  </section>
+</MainLayout>

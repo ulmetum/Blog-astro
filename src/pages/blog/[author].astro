@@ -1,0 +1,56 @@
+---
+import type { GetStaticPaths } from 'astro'
+import { Image } from 'astro:assets'
+import MainLayout from '@layouts/MainLayout.astro'
+import { siteConfig } from '@config/site-config'
+import BlogPost from '@components/BlogPost.astro'
+import { getCollection } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  blogPosts: CollectionEntry<'blog'>[]
+  author: CollectionEntry<'author'>
+}
+export const getStaticPaths = (async () => {
+  const [author, blogPosts] = await Promise.all([getCollection('author'), getCollection('blog')])
+  return author.map((author) => ({
+    params: { author: author.id },
+    props: {
+      blogPosts: blogPosts.filter((post) => post.data.author.id === author.id),
+      author: author
+    }
+  }))
+}) satisfies GetStaticPaths
+
+const { blogPosts, author } = Astro.props
+---
+
+<MainLayout>
+  <a class="btn-back" href="/">Volver</a>
+  <section class="bg-gray-900">
+    <div class="container mx-auto px-6 py-10">
+      <h1 class="text-3xl font-semibold capitalize text-white lg:text-4xl">
+        {siteConfig.title}
+      </h1>
+
+      <div class="text-md mb-0 mt-2 flex flex-row text-gray-400">
+        <Image
+          class="rounded-full"
+          src={author.data.avatar}
+          alt={author.data.name}
+          width={50}
+          height={50}
+        />
+
+        <div class="ml-5 flex flex-col">
+          <a>{author.data.name}</a>
+          <span>Listado de todos mis posts</span>
+        </div>
+      </div>
+
+      <div class="mt-8 grid grid-cols-1 gap-8 md:mt-16 md:grid-cols-2">
+        {blogPosts.map((post) => <BlogPost post={post} />)}
+      </div>
+    </div>
+  </section>
+</MainLayout>

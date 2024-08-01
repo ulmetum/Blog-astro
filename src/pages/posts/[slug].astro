@@ -1,0 +1,76 @@
+---
+import type { GetStaticPaths } from 'astro'
+import BlogLayout from '@layouts/BlogLayout.astro'
+import { getCollection } from 'astro:content'
+import { Image, Picture } from 'astro:assets'
+import { getEntry } from 'astro:content'
+import { Formatter } from '@utils/formatter'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  post: CollectionEntry<'blog'>
+}
+
+export const getStaticPaths = (async () => {
+  const blogPosts = await getCollection('blog')
+  return blogPosts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post }
+  }))
+}) satisfies GetStaticPaths
+
+const { post } = Astro.props
+const { slug } = Astro.params
+
+const { data } = post
+
+const { Content, headings } = await post.render()
+
+const author = await getEntry('author', data.author.id)
+---
+
+<BlogLayout title={data.title}>
+  <div id="btn-back"></div>
+  <h1 class="mb-0 text-xs text-gray-500">{data.title}</h1>
+  <!-- <h4 class="text-md mb-0 text-gray-500">{data.author}</h4> -->
+
+  <div class="text-md mb-0 mt-2 flex text-gray-400">
+    <Image
+      src={author.data.avatar}
+      alt={author.data.name}
+      class="rounded-full"
+      width={50}
+      height={50}
+    />
+    <div class="ml-5 flex flex-col">
+      <a href={`/blog/${data.author.id}`}>{author.data.name}</a>
+      <span class="text-xs text-gray-200">{Formatter.formatDate(data.date)}</span>
+    </div>
+  </div>
+
+  <Picture
+    src={data.image}
+    alt={data.title}
+    widths={[240, 540, 800, data.image.width]}
+    sizes={`(max-width: 360px) 240px, (max-width: 720px) 540px, (max-width: 1600px) 800px, ${data.image.width}px`}
+    class="my-5 h-[250px] w-full rounded-md object-cover"
+  />
+
+  <h3>Tabla de contenidos</h3>
+  <ol>
+    {
+      headings.map((heading) => (
+        <li>
+          <a href={`#${heading.slug}`}>{heading.text}</a>
+        </li>
+      ))
+    }
+  </ol>
+  <Content />
+
+  <div class="my-20">
+    <a href="#btn-back">Arriba</a>
+  </div>
+</BlogLayout>
+
+<style></style>
